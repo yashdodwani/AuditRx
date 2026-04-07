@@ -1,2 +1,140 @@
-// placeholder
-
+[
+  {
+    "case_id": "DEV-2024-001",
+    "protocol_id": "ONCO-301-Ph3",
+    "site_id": "SITE-042",
+    "patient_id": "PT-042-0017",
+    "event_date": "2024-03-12",
+    "reported_by": "Dr. Sarah Kim, Site PI",
+    "case_description": "Patient PT-042-0017 received Study Drug Cycle 3 Day 1 infusion on 2024-03-12. Per protocol, the visit window is Day 21 ± 3 days from Cycle 2 Day 1 (2024-02-13). The actual interval was 27 days, placing the visit 3 days outside the allowable window. No dose modifications were made. Patient experienced no adverse events. The delay was caused by a patient-requested reschedule due to personal travel.",
+    "additional_evidence": "Patient medical records confirm no AEs. Scheduling log shows patient called to reschedule on 2024-03-05.",
+    "ground_truth": {
+      "severity": "minor",
+      "category": "visit_window",
+      "root_cause_keywords": ["scheduling", "patient request", "rescheduled", "window exceeded"],
+      "corrective_action_keywords": ["reschedule", "protocol window", "notify patient", "document"],
+      "preventive_action_keywords": ["reminder", "scheduling system", "window alert", "proactive contact"],
+      "timeline_days_range": [14, 30],
+      "correct_escalation": "self_correct",
+      "coordinator_pushback": "The patient called us to reschedule, we had no choice. This is really not our fault and I'm not sure why we even need to write a CAPA for this.",
+      "coordinator_incorrect_claim": "Visit windows are just guidelines anyway, they are not binding per ICH-E6.",
+      "correct_regulatory_rebuttal": "ICH E6(R2) section 4.5.2 requires adherence to protocol-specified visit windows. While minor, it must be documented with root cause analysis."
+    },
+    "difficulty": "easy"
+  },
+  {
+    "case_id": "DEV-2024-002",
+    "protocol_id": "ONCO-301-Ph3",
+    "site_id": "SITE-017",
+    "patient_id": "PT-017-0031",
+    "event_date": "2024-01-29",
+    "reported_by": "Clinical Research Coordinator, J. Patel",
+    "case_description": "Patient PT-017-0031 was enrolled in the study and signed the informed consent form (ICF) on 2024-01-15. Screening procedures including blood draw and CT scan were initiated on 2024-01-10, five days prior to ICF signing. The patient was subsequently randomized. The pre-ICF procedures included a protocol-required CT scan that exposed the patient to radiation.",
+    "additional_evidence": "Enrollment log confirms ICF date 2024-01-15. Lab requisition and radiology order both dated 2024-01-10.",
+    "ground_truth": {
+      "severity": "critical",
+      "category": "informed_consent",
+      "root_cause_keywords": ["pre-consent", "consent before screening", "ICF not signed", "procedures before consent"],
+      "corrective_action_keywords": ["re-consent", "IRB notify", "patient notification", "sponsor alert", "immediate"],
+      "preventive_action_keywords": ["training", "consent checklist", "verify ICF before", "coordinator retraining"],
+      "timeline_days_range": [1, 7],
+      "correct_escalation": "irb_report",
+      "coordinator_pushback": "The patient had already verbally agreed and we were just getting a head start. They signed before randomization so it should be fine.",
+      "coordinator_incorrect_claim": "Verbal consent counts as informed consent under FDA regulations so the formal ICF is just a formality.",
+      "correct_regulatory_rebuttal": "21 CFR 50.25 and ICH E6(R2) section 4.8 require written informed consent before any study procedures. Verbal consent does not satisfy regulatory requirements. This must be reported to the IRB."
+    },
+    "difficulty": "easy"
+  },
+  {
+    "case_id": "DEV-2024-003",
+    "protocol_id": "CARD-205-Ph2",
+    "site_id": "SITE-089",
+    "patient_id": "PT-089-0008",
+    "event_date": "2024-02-20",
+    "reported_by": "Pharmacist, R. Chen",
+    "case_description": "Patient PT-089-0008 was prescribed Study Drug at 200mg BID per protocol. On 2024-02-20, due to a pharmacy dispensing error, the patient received 400mg BID (2x the protocol dose) for a 14-day supply. The patient took the incorrect dose for 9 days before the error was discovered during a routine drug accountability check. Patient reported Grade 1 headache and fatigue which may be dose-related. Patient's creatinine elevated from 0.9 to 1.4 mg/dL.",
+    "additional_evidence": "Pharmacy dispensing log shows 400mg dispensed. Patient diary confirms 9 days of incorrect dosing. Lab report dated 2024-02-28 shows creatinine elevation.",
+    "ground_truth": {
+      "severity": "critical",
+      "category": "dosing_error",
+      "root_cause_keywords": ["dispensing error", "pharmacy error", "incorrect dose", "double dose", "dispensed"],
+      "corrective_action_keywords": ["halt drug", "medical evaluation", "sponsor notify", "safety reporting", "adverse event", "SAE"],
+      "preventive_action_keywords": ["double-check dispensing", "pharmacist verification", "barcode scan", "independent check", "dispensing SOP"],
+      "timeline_days_range": [1, 3],
+      "correct_escalation": "sponsor_notify",
+      "coordinator_pushback": "The patient only had mild symptoms and the creatinine is slightly elevated but still in normal range. We have already corrected the error so there is no need to escalate this to the sponsor.",
+      "coordinator_incorrect_claim": "Since the patient is not hospitalized this doesn't meet the criteria for a Serious Adverse Event and we can handle it internally.",
+      "correct_regulatory_rebuttal": "Protocol deviations involving patient safety must be reported to sponsor within 24 hours per ICH E6(R2) 4.5.3. The creatinine elevation requires medical evaluation and potential SAE assessment regardless of hospitalization status."
+    },
+    "difficulty": "medium"
+  },
+  {
+    "case_id": "DEV-2024-004",
+    "protocol_id": "NEURO-112-Ph2",
+    "site_id": "SITE-033",
+    "patient_id": "PT-033-0045",
+    "event_date": "2024-04-05",
+    "reported_by": "Sub-investigator, Dr. M. Torres",
+    "case_description": "Patient PT-033-0045 was randomized to treatment arm B on 2024-04-05. Review of the eligibility criteria revealed the patient's MMSE score at screening was 18, while the protocol requires a minimum MMSE score of 22 for enrollment. The sub-investigator notes that the patient's primary caregiver was present during screening and may have influenced the MMSE assessment. The patient has received 2 doses of study drug.",
+    "additional_evidence": "Original MMSE score sheet signed by site neurologist shows score of 18. Patient has received IP on 2024-04-06 and 2024-04-08.",
+    "ground_truth": {
+      "severity": "major",
+      "category": "eligibility_criteria",
+      "root_cause_keywords": ["eligibility", "MMSE", "inclusion criteria", "not met", "caregiver influence"],
+      "corrective_action_keywords": ["halt dosing", "sponsor notify", "eligibility review", "medical monitor", "consider withdrawal"],
+      "preventive_action_keywords": ["eligibility checklist", "independent review", "screening verification", "double-check criteria"],
+      "timeline_days_range": [2, 10],
+      "correct_escalation": "sponsor_notify",
+      "coordinator_pushback": "The caregiver was just trying to help the patient understand the questions. Besides, the patient's MMSE was borderline and the neurologist felt the patient was appropriate for the study based on clinical judgment.",
+      "coordinator_incorrect_claim": "Protocol eligibility criteria are sometimes applied with clinical discretion when a patient is borderline — this is standard practice.",
+      "correct_regulatory_rebuttal": "Protocol eligibility criteria are mandatory per ICH E6(R2) 4.3. Clinical discretion cannot override written inclusion/exclusion criteria. The sponsor medical monitor must be notified to determine next steps including potential withdrawal."
+    },
+    "difficulty": "medium"
+  },
+  {
+    "case_id": "DEV-2024-005",
+    "protocol_id": "ONCO-301-Ph3",
+    "site_id": "SITE-055",
+    "patient_id": "PT-055-0002",
+    "event_date": "2024-05-01",
+    "reported_by": "Data Manager, L. Wang",
+    "case_description": "During a routine data review for patient PT-055-0002, the data manager discovered that efficacy endpoint assessments (tumor measurements via RECIST 1.1) from 3 consecutive visits (Cycle 4, 6, and 8) show identical values to 3 decimal places — a statistical impossibility given normal biological variation. The radiologist who performed the reads left the site 6 months ago. The original DICOM images for Cycle 6 are missing from the system. Site staff report that data entry was done retrospectively from handwritten notes for these visits.",
+    "additional_evidence": "EDC audit trail shows all three entries made on the same day by same user. Cycle 6 DICOM images not found in PACS or backup. Former radiologist's employment ended 2023-11-01.",
+    "ground_truth": {
+      "severity": "critical",
+      "category": "data_integrity",
+      "root_cause_keywords": ["data fabrication", "retrospective entry", "missing data", "identical values", "data integrity"],
+      "corrective_action_keywords": ["halt", "sponsor notify", "FDA", "data audit", "investigation", "IRB report"],
+      "preventive_action_keywords": ["real-time data entry", "audit trail monitoring", "independent data review", "imaging backup"],
+      "timeline_days_range": [1, 2],
+      "correct_escalation": "halt_site",
+      "coordinator_pushback": "The radiologist may have used the same rounding methodology. The handwritten notes were accurate and data entry was just delayed due to staff shortages. Missing images may be an IT issue.",
+      "coordinator_incorrect_claim": "Retrospective data entry from handwritten notes is an accepted practice when there are staffing issues and it's all documented in the site's deviation log.",
+      "correct_regulatory_rebuttal": "Identical values to 3 decimal places across 3 biological measurements is a data integrity red flag per 21 CFR Part 11 and ICH E6(R2) section 5.5. Missing source data for primary endpoints and retrospective entry without contemporaneous documentation warrants immediate sponsor escalation and potential site suspension."
+    },
+    "difficulty": "hard"
+  },
+  {
+    "case_id": "DEV-2024-006",
+    "protocol_id": "CARD-205-Ph2",
+    "site_id": "SITE-061",
+    "patient_id": "PT-061-0019",
+    "event_date": "2024-06-15",
+    "reported_by": "Site Monitor, CRO Visit Report",
+    "case_description": "During a monitoring visit, the site monitor discovered that patient PT-061-0019 experienced a Grade 3 ALT elevation (7x ULN) on 2024-05-28. Per protocol, Grade 3 liver enzyme elevations require immediate study drug discontinuation and reporting to sponsor within 24 hours. The site did not discontinue the drug — the patient received 3 additional doses on 2024-05-30, 2024-06-02, and 2024-06-05. The sponsor was not notified until today (2024-06-15), 18 days after the event. The PI states the elevation was felt to be 'likely dietary' and not drug-related.",
+    "additional_evidence": "Lab report dated 2024-05-28 signed by PI. Drug accountability confirms 3 additional doses dispensed. No sponsor safety notification found in TMF through today.",
+    "ground_truth": {
+      "severity": "critical",
+      "category": "safety_reporting",
+      "root_cause_keywords": ["failure to report", "late reporting", "safety reporting", "ALT elevation", "protocol violation", "continued dosing"],
+      "corrective_action_keywords": ["immediate halt", "sponsor notify", "regulatory authority", "patient safety evaluation", "IRB", "FDA notify"],
+      "preventive_action_keywords": ["safety alert system", "reporting SOP training", "automated lab flag", "PI retraining"],
+      "timeline_days_range": [1, 1],
+      "correct_escalation": "halt_site",
+      "coordinator_pushback": "The PI made a clinical judgment that the elevation was dietary and not drug-related. The patient agreed to continue. We documented the PI's assessment in the patient chart.",
+      "coordinator_incorrect_claim": "Protocol-required reporting timelines can be overridden by PI clinical judgment when there is a plausible alternative explanation for a lab finding.",
+      "correct_regulatory_rebuttal": "Protocol-defined reporting timelines for safety events are mandatory and cannot be overridden by PI attribution. 21 CFR 312.32 and ICH E6(R2) 4.11 require sponsor notification of safety-defined thresholds within specified timelines regardless of causality assessment. Continued dosing after a protocol-specified stop criterion is a critical deviation requiring immediate regulatory escalation."
+    },
+    "difficulty": "hard"
+  }
+]
