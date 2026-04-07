@@ -1,2 +1,103 @@
-# placeholder
+name: AuditRx
+version: "1.0.0"
+description: >
+  Clinical Trial Protocol Deviation Triage — an OpenEnv environment where AI agents
+  classify deviations, draft CAPA responses, and negotiate escalation decisions with
+  an adversarial simulated site coordinator. Based on real ICH-GCP / FDA regulatory
+  frameworks.
 
+author: AuditRx Team
+tags:
+  - openenv
+  - clinical-trials
+  - regulatory
+  - compliance
+  - multi-turn
+  - adversarial
+  - rl
+
+tasks:
+  - name: classify_deviation
+    description: >
+      Classify a protocol deviation by severity (critical/major/minor) and category
+      (informed_consent, dosing_error, visit_window, etc.). Scores 0.0–1.0 with
+      partial credit per correct field.
+    difficulty: easy
+    max_steps: 3
+    score_range: [0.0, 1.0]
+
+  - name: draft_capa
+    description: >
+      Draft a complete Corrective and Preventive Action (CAPA) response including
+      root cause analysis, corrective actions, preventive actions, and implementation
+      timeline. Scored via regulatory keyword matching and timeline validation.
+    difficulty: medium
+    max_steps: 5
+    score_range: [0.0, 1.0]
+
+  - name: negotiate_escalation
+    description: >
+      Multi-turn adversarial task. The agent must negotiate with a simulated site
+      coordinator who defends incorrect regulatory positions, then make the correct
+      escalation decision (self_correct / sponsor_notify / irb_report / halt_site).
+      Reward for regulatory accuracy per turn + correct final decision + efficiency.
+    difficulty: hard
+    max_steps: 8
+    score_range: [0.0, 1.0]
+
+environment:
+  type: http
+  base_url: "https://{hf_space_url}"
+  endpoints:
+    reset: POST /reset
+    step:  POST /step
+    state: GET  /state/{session_id}
+    close: DELETE /close/{session_id}
+  websocket: /ws
+
+action_space:
+  type: structured
+  schema: AuditRxAction
+  fields:
+    - action_type: enum [classify, draft_capa, negotiate, escalate, request_info]
+    - severity: enum [critical, major, minor] (Task 1)
+    - category: enum [informed_consent, eligibility_criteria, dosing_error, visit_window, data_integrity, safety_reporting, randomization] (Task 1)
+    - root_cause: string max 500 chars (Task 2)
+    - corrective_action: string max 800 chars (Task 2)
+    - preventive_action: string max 800 chars (Task 2)
+    - timeline_days: int 1-180 (Task 2)
+    - message: string max 1000 chars (Task 3 negotiate)
+    - escalation: enum [self_correct, sponsor_notify, irb_report, halt_site] (Task 3)
+
+observation_space:
+  type: structured
+  schema: AuditRxObservation
+  fields:
+    - task_name: string
+    - step_number: int
+    - max_steps: int
+    - case_id: string
+    - case_description: string (the deviation narrative)
+    - protocol_id: string
+    - site_id: string
+    - patient_id: string
+    - event_date: string
+    - reported_by: string
+    - additional_evidence: string | null
+    - coordinator_message: string | null (Task 3 only)
+    - negotiation_history: list of turn dicts (Task 3)
+    - negotiation_turn: int
+    - last_action_feedback: string | null
+    - done: bool
+    - episode_reward_so_far: float
+
+reward:
+  range: [0.0, 1.0]
+  description: >
+    Task 1: 0.5 per correct classification field (severity + category).
+    Task 2: weighted keyword coverage across root_cause (30%), corrective_action (30%),
+            preventive_action (25%), and timeline accuracy (15%).
+    Task 3: per-turn regulatory rebuttal quality (up to 0.40 per turn) +
+            correct escalation decision (0.40) + efficiency bonus (0.20).
+            Penalty of -0.05 per request_info action.
+  partial_credit: true
