@@ -48,9 +48,14 @@ def _load_env_file() -> None:
 
 _load_env_file()
 
-API_KEY = (os.getenv("HF_TOKEN") or os.getenv("API_KEY", "")).strip()
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o")
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+# Optional - if you use from_docker_image():
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
+
+API_KEY = (HF_TOKEN or os.getenv("API_KEY", "")).strip()
 ENV_BASE_URL = os.getenv("AUDITRX_BASE_URL", "http://localhost:7860").rstrip("/")
 BENCHMARK = "auditrx"
 
