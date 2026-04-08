@@ -18,6 +18,7 @@ import asyncio
 import json
 import os
 import textwrap
+from pathlib import Path
 from typing import Any, Optional
 
 import httpx
@@ -27,7 +28,27 @@ from openai import OpenAI
 # Config
 # ─────────────────────────────────────────────
 
-API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY", "")
+
+def _load_env_file() -> None:
+    """Load simple KEY=VALUE entries from a local .env file if present."""
+    env_path = Path(__file__).resolve().parent / ".env"
+    if not env_path.exists():
+        return
+
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        # Respect already-exported shell variables.
+        os.environ.setdefault(key, value)
+
+
+_load_env_file()
+
+API_KEY = (os.getenv("HF_TOKEN") or os.getenv("API_KEY", "")).strip()
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
 ENV_BASE_URL = os.getenv("AUDITRX_BASE_URL", "http://localhost:7860").rstrip("/")
