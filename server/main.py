@@ -9,11 +9,13 @@ from __future__ import annotations
 import asyncio
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any, Optional
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from environment import AuditRxEnvironment
@@ -81,6 +83,14 @@ app.add_middleware(
 # ─────────────────────────────────────────────
 # HTTP endpoints
 # ─────────────────────────────────────────────
+
+_UI_HTML_PATH = Path(__file__).parent / "templates" / "index.html"
+
+
+@app.get("/", response_class=HTMLResponse)
+async def ui():
+    return HTMLResponse(content=_UI_HTML_PATH.read_text())
+
 
 @app.get("/health")
 async def health():
