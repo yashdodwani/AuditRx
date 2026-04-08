@@ -98,7 +98,10 @@ async def health():
 
 
 @app.post("/reset", response_model=ResetResponse)
-async def reset(req: ResetRequest):
+async def reset(req: Optional[ResetRequest] = None):
+    if req is None:
+        req = ResetRequest()
+        
     if req.task_name not in VALID_TASKS:
         raise HTTPException(400, f"Invalid task. Choose from: {VALID_TASKS}")
 
