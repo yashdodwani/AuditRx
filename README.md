@@ -1,3 +1,11 @@
+---
+title: AuditRx
+emoji: 🏥
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
 # AuditRx 🏥⚖️
 ### Clinical Trial Protocol Deviation Triage — OpenEnv Environment
 
