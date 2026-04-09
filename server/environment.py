@@ -156,6 +156,11 @@ class AuditRxEnvironment:
             last_feedback=feedback,
             last_valid=True,
         )
+
+        # Ensure the final task score (cumulative_reward) is strictly in (0, 1) when done
+        if self._done:
+            self._cumulative_reward = max(0.01, min(0.99, self._cumulative_reward))
+
         return obs, round(reward, 2), self._done, {}
 
     # ───────────────────────────── state ──────────────────────────────
@@ -262,7 +267,8 @@ class AuditRxEnvironment:
             total_reward += esc_score
             feedback_parts.append(esc_feedback)
 
-        return round(total_reward, 2), " ".join(feedback_parts), coordinator_reply
+        final_reward = max(0.01, min(0.99, total_reward))
+        return round(final_reward, 2), " ".join(feedback_parts), coordinator_reply
 
     # ───────────────────────────── helpers ────────────────────────────
 
@@ -301,3 +307,4 @@ class AuditRxEnvironment:
     def _check_done(self, max_steps: int) -> None:
         if self._step >= max_steps:
             self._done = True
+

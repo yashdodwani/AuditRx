@@ -45,7 +45,8 @@ def grade_classification(
     else:
         feedback_parts.append(f"Category '{agent_category}' ✗ (expected '{gt_category}').")
 
-    return round(score, 2), " ".join(feedback_parts)
+    final_score = max(0.01, min(0.99, score))
+    return round(final_score, 2), " ".join(feedback_parts)
 
 
 # ──────────────────────────────────────────────────────────────
@@ -107,7 +108,8 @@ def grade_capa(
     )
 
     total = (rc_score * 0.30) + (ca_score * 0.30) + (pa_score * 0.25) + (tl_score * 0.15)
-    return round(min(total, 1.0), 2), " ".join(feedback_parts)
+    final_score = max(0.01, min(0.99, total))
+    return round(final_score, 2), " ".join(feedback_parts)
 
 
 # ──────────────────────────────────────────────────────────────
