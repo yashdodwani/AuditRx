@@ -5,7 +5,7 @@ MANDATORY environment variables:
   API_BASE_URL      LLM endpoint
   MODEL_NAME        Model identifier
   HF_TOKEN          Hugging Face / API key
-  AUDITRX_BASE_URL  The deployed HF Space URL (e.g. https://your-space.hf.space)
+  AUDITRX_BASE_URL  The deployed Space URL (e.g. https://space.hf.space)
 
 Runs all 3 tasks sequentially and emits structured stdout logs.
 
@@ -19,7 +19,7 @@ import json
 import os
 import textwrap
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 import httpx
 from openai import OpenAI
@@ -56,7 +56,8 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
 
 API_KEY = (HF_TOKEN or os.getenv("API_KEY", "")).strip()
-ENV_BASE_URL = os.getenv("AUDITRX_BASE_URL", "http://localhost:7860").rstrip("/")
+ENV_BASE_URL = os.getenv("AUDITRX_BASE_URL", "http://localhost:7860")
+ENV_BASE_URL = ENV_BASE_URL.rstrip("/")
 BENCHMARK = "auditrx"
 
 # Run only one task if specified, else all three
